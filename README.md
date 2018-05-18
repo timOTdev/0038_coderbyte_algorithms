@@ -1,16 +1,49 @@
 # Coderbyte-Algorithms
 
+## 5/18/2018: [Kaprekars Constant](https://coderbyte.com/information/Kaprekars%20Constant)
+
+- Using the JavaScript language, have the function KaprekarsConstant(num) take the num parameter being passed which will be a 4-digit number with at least two distinct digits. Your program should perform the following routine on the number: Arrange the digits in descending order and in ascending order (adding zeroes to fit it to a 4-digit number), and subtract the smaller number from the bigger number. Then repeat the previous step. Performing this routine will always cause you to reach a fixed number: 6174. Then performing the routine on 6174 will always give you 6174 (7641 - 1467 = 6174). Your program should return the number of times this routine must be performed until 6174 is reached. For example: if num is 3524 your program should return 3 because of the following steps: (1) 5432 - 2345 = 3087, (2) 8730 - 0378 = 8352, (3) 8532 - 2358 = 6174.
+
+```js
+function KaprekarsConstant(num) {
+  let counter = 1;
+  checkKaprekars(num);
+
+  function checkKaprekars(num) {
+    let newNum = String(num);
+    if (newNum.length < 4) {
+      newNum += '0'.repeat(4 - newNum.length);
+    }
+    let ascend = newNum.split('').sort(function(a, b){return a-b}).join('');
+    let descend = newNum.split('').sort(function(a, b){return b-a}).join('');
+    let difference = descend - ascend;
+
+    if (difference !== 6174) {
+      counter++;
+      return checkKaprekars(difference);
+    }
+    return counter;
+  }
+  return counter;
+}
+
+KaprekarsConstant(2111); // 5
+KaprekarsConstant(9831); // 7
+```
+
+- I used `let newNum = num.toString().padEnd(4, '000');` but Repl.it didn't like it, so used `'0'.repeat()` instead
+
 ## 5/17/2018: [Alphabet Soup](https://coderbyte.com/information/Alphabet%20Soup)
 
 - Using the JavaScript language, have the function AlphabetSoup(str) take the str string parameter being passed and return the string with the letters in alphabetical order (ie. hello becomes ehllo). Assume numbers and punctuation symbols will not be included in the string.
 
 ```js
 function AlphabetSoup (str) {
-  return str.split('').sort('').join('');
+  return str.split('').sort().join('');
 }
 
-AlphabetSoup(coderbyte); // bcdeeorty;
-AlphabetSoup(hooplah); // ahhloop;
+AlphabetSoup('coderbyte'); // bcdeeorty;
+AlphabetSoup('hooplah'); // ahhloop;
 ```
 
 ## 5/17/2018: [Time Convert Algorithm](https://coderbyte.com/information/Time%20Convert)
@@ -624,7 +657,7 @@ This works because the arrow function lexically binds the this value to the encl
 [Exploring ES6 book](http://exploringjs.com/es6/ch_arrow-functions.html)
 [ES6 In Depth: Arrow functions](https://hacks.mozilla.org/2015/06/es6-in-depth-arrow-functions/)
 
-## 5/17/2018 [Basic array manipulation with functions in JavaScript](https://coderbyte.com/algorithm/basic-array-manipulation-with-functions-in-javascript)
+## 5/17/2018 JavaScript Interview Preparation: [Basic array manipulation with functions in JavaScript](https://coderbyte.com/algorithm/basic-array-manipulation-with-functions-in-javascript)
 
 ### Basic array manipulation with functions in JavaScript
 
@@ -767,7 +800,7 @@ return doubled;
 doubling([2,3,4,5,6])
 ```
 
-## 5/17/2018 [10 common JavaScript interview questions](https://coderbyte.com/algorithm/10-common-javascript-interview-questions)
+## 5/17/2018 JavaScript Interview Preparation: [10 common JavaScript interview questions](https://coderbyte.com/algorithm/10-common-javascript-interview-questions)
 
 ### 1. How would you check if a number is an integer?
 
@@ -960,7 +993,7 @@ var getPriv = func();
 console.log(getPriv()); // => secret code
 ```
 
-## 5/17/2018 [3 common JavaScript closure questions](https://coderbyte.com/algorithm/3-common-javascript-closure-questions)
+## 5/17/2018 JavaScript Interview Preparation: [3 common JavaScript closure questions](https://coderbyte.com/algorithm/3-common-javascript-closure-questions)
 
 ### 3 common JavaScript closure questions
 
@@ -1003,9 +1036,9 @@ for (var i = 0; i < 3; i++) {
 
 - EXPLANATION: setTimeout is a higher order function (i.e. a function that takes one or more functions as parameters - these function(s) passed as parameters are also known as callbacks). setTimeout has two arguments: the first argument is the function to be invoked (in this case the anonymous function with the alert call), and the second argument is a time interval in milliseconds.
 
-setTimeout's job, when called, is to immediately set a timer that will expire after a specified time interval (the second argument to setTimeout). When that timer expires, the code that is in the callback function of the first argument passed to setTimeout is executed (and when this callback function is executed, that's where the interesting effects of JS closures come in...but correct me if I'm wrong, it seems like you have a good handle on that part).
+- setTimeout's job, when called, is to immediately set a timer that will expire after a specified time interval (the second argument to setTimeout). When that timer expires, the code that is in the callback function of the first argument passed to setTimeout is executed (and when this callback function is executed, that's where the interesting effects of JS closures come in...but correct me if I'm wrong, it seems like you have a good handle on that part).
 
-setTimeout does not wait for the time interval to expire and then execute. setTimeout executes immediately. It is the callback function in setTimeout's first argument that waits/executes.
+- setTimeout does not wait for the time interval to expire and then execute. setTimeout executes immediately. It is the callback function in setTimeout's first argument that waits/executes.
 
 ### 2. Write a function that would allow you to do this.
 
@@ -1056,4 +1089,255 @@ c.add(9);
 
 // now we can access the private variable in the following way
 c.retrieve(); // => The counter is currently at: 14
+```
+
+## 5/18/2017 JavaScript Interview Preparation: [Map, reduce, and filter - JavaScript functional programming](https://coderbyte.com/algorithm/map-reduce-filter-javascript-functional-programming)
+
+### Map, reduce, and filter - JavaScript functional programming
+
+- Three functions that are commonly used when applying [functional programming](http://eloquentjavascript.net/1st_edition/chapter6.html) techniques in Javascript are the map, reduce, and filter functions. We'll go over each below and explain how they work.
+
+#### Map
+
+- The [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) function creates a new array by calling a specific function on each element in an initial array. For example, if you have an array of strings in the form "MM-DD" that represent birthdays and you want to convert each element to be in a different format, you could use the map function to create a new array with new elements.
+
+```js
+var bdays = ['08-14', '10-04', '04-21']; 
+
+// we want a new array where the birthdays will be in the format: MM/DD
+// the elem parameter will be each element from the original array 
+var bdays2 = bdays.map(function(elem) { 
+  return elem.replace('-', '/');
+});
+
+console.log(bdays2); // => ['08/14', '10/04', '04/21']
+```
+
+- Another simple example using the map function to round an array of numbers up in JavaScript:
+
+```js
+var arr = [1.5, 2.56, 5.1, 12.33];
+
+// round each number up in an array
+var rounded = arr.map(Math.ceil);
+
+console.log(rounded); // => [2, 3, 6, 13]
+```
+
+#### Reduce
+
+- The [reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) function applies a specific function to all the elements in an array and reduces it to a single value. The reduce function has actually been used in several of the challenge solutions, one example being Mean Mode. We can use the reduce function to add up all the numbers in an array for example. The four arguments the reduce function takes are:
+
+1) previous value
+2) current value
+3) current index
+4) original array
+
+```js
+var nums = [1, 2, 3, 4];
+
+var sum = nums.reduce(function(prevVal, curVal, curIndex, origArr) {
+  return prevVal + curVal;
+});
+
+console.log(sum); // => 10
+```
+
+#### Filter
+
+- The [filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) function creates a new array with all elements from an original array that pass a certain functions test. For example, you can use the filter function to create a new array of only positive values, like below. The function being called takes in an argument which is the value of the current element in the array.
+
+```js
+var nums = [-4, 3, 2, -21, 1];
+
+var pos = nums.filter(function(el) {
+  return el > 0;
+});
+
+console.log(pos); // => [3, 2, 1]
+```
+
+- You can also, for example, filter out all objects in a data file that have incorrect or undefined values. In the example below, we filter out all elements that have an incorrect age value.
+
+```js
+var data = [
+  {name: 'daniel', age: 45},
+  {name: 'john', age: 34},
+  {name: 'robert', age: null},
+  {name: 'jen', age: undefined},
+  {name: null, age: undefined}
+];
+
+// dataMod will now contain only the first two objects in the data array
+var dataMod = data.filter(function(el) {
+  if (el.name != undefined && el.age != undefined) {
+    return true;
+  }
+  else { 
+    return false;
+  }
+});
+```
+
+- Notice that we use `!=` which supports type coercion meaning that null will be equal
+- This is why you will see that the last item of name in the array/object is null but will still fulfill the if statement of being falsy
+
+- These are some basic functional programming methods commonly used in JavaScript. Tutorials coming up will focus on more advanced functions and also on incorporating these methods with new [ECMAScript 2015](https://github.com/lukehoban/es6features) syntax and functions as well.
+
+## 5/18/2017 JavaScript Interview Preparation: [Step-by-step solution for step counting using recursion](https://coderbyte.com/algorithm/step-by-step-solution-step-walking-using-recursion)
+
+### Step-by-step solution for step counting using recursion
+
+- A lecturer at [Hack Reactor](http://www.hackreactor.com/) made this comment on Quora in response to a question about preparing for the Hack Reactor admission's challenge:
+
+```plain
+One big thing that will help you: get intimately familiar with the concepts of recursion and JavaScript closures ... they will come up early in your interactions with Hack Reactor (and are just great things to understand in general).
+```
+
+- Below we'll cover a clever question that we'll solve using recursion. In a [previous post](https://coderbyte.com/algorithm/3-common-javascript-closure-questions) we covered some questions regarding closures.
+
+### Sources
+
+- [https://www.quora.com/How-did-you-prepare-for-Hack-Reactors-admissions-challenge](https://www.quora.com/How-did-you-prepare-for-Hack-Reactors-admissions-challenge)
+- [https://www.glassdoor.com/Interview/You-are-climbing-a-stair-case-Each-time-you-can-either-make-1-step-or-2-steps-The-staircase...](https://www.glassdoor.com/Interview/You-are-climbing-a-stair-case-Each-time-you-can-either-make-1-step-or-2-steps-The-staircase-has-n-steps-In-how-many-dist-QTN_133071.htm)
+
+### Question
+
+- Suppose you want climb a staircase of N steps, and on each step you can take either 1 or 2 steps. How many distinct ways are there to climb the staircase? For example, if you wanted to climb 4 steps, you can take the following distinct number of steps:
+
+```plain
+1) 1, 1, 1, 1
+2) 1, 1, 2
+3) 1, 2, 1
+4) 2, 1, 1
+5) 2, 2
+```
+
+- So there are 5 distinct ways to climb 4 steps. We want to write a function, using recursion, that will produce the answer for any number of steps.
+
+#### Solution
+
+- We'll try to build up a list of solutions for N starting from the smallest staircase. If we want to climb a staircase of 1 step (N = 1), then we can only take 1 step to reach the top. Therefore, the solution when N = 1 is 1. If we want to climb a staircase of 2 steps (N = 2), we can take either 2 steps, or 1 step and 1 step to reach the top. So for N = 2, the solution is 2.
+
+```plain
+N = 1
+Solution = 1
+
+N = 2
+Solution = 2
+
+Now what about 3 steps?
+
+<img src='https://i.imgur.com/YiAuwjT.jpg' alt='3 steps'>
+
+N = 3
+Solution = 3
+
+N = 4
+Solution = 5 (from example above)
+
+We can see a pattern beginning to emerge. The solution for N steps is equal to the solutions for N - 1 steps plus N - 2 steps. Let's confirm this.
+
+N = 3
+Solution = (N - 1 steps) + (N - 2 steps)
+Solution = (N = 2) + (N = 1)
+Solution = (2) + (1)
+Solution = 3
+
+N = 4
+Solution = (N - 1 steps) + (N - 2 steps)
+Solution = (N = 3) + (N = 2)
+Solution = (3) + (2)
+Solution = 5
+```
+
+It checks out so far! The solution to this problem requires [recursion](https://en.wikipedia.org/wiki/Recursion_(computer_science)), which means to solve for a particular N, we need the solutions for previous N's. Our code solution below will attempt to mimic this process of recursion to solve for any N.
+
+#### Code
+
+```js
+function countSteps(N) {
+
+  // just as in our solution explanation above, we know that to climb 1 step
+  // there is only 1 solution, and for 2 steps there are 2 solutions
+  if (N === 1) { return 1; }
+  if (N === 2) { return 2; }
+
+  // for all N > 2, we add the previous (N - 1) + (N - 2) steps to get
+  // an answer recursively
+  return countSteps(N - 1) + countSteps(N - 2);
+}
+
+// the solution for N = 6 will recursively be solved by calculating
+// the solution for N = 5, N = 4, N = 3, and N = 2 which we know is 2
+countSteps(6);
+```
+
+- Another solution posted by commenter:
+
+```js
+function stairCounter(stairs){
+  var count = 0;
+  var start = 0;
+  function find(start){
+    if(start === stairs){
+      count += 1
+    }
+    else if(start > stairs)
+      return null
+    else{
+      return find(start + 2) || find(start + 1)
+    }
+  }
+  find(start);
+  return count;
+}
+```
+
+## 5/18/2017 JavaScript Interview Preparation: [Determine overlapping numbers in ranges](https://coderbyte.com/algorithm/step-by-step-solution-step-walking-using-recursion)
+
+### Determine overlapping numbers in ranges
+
+- The question is as follows:
+
+```plain
+You will be given an array with 5 numbers. The first 2 numbers represent a range, and the next two numbers represent another range. The final number in the array is X. The goal of your program is to determine if both ranges overlap by at least X numbers. For example, in the array [4, 10, 2, 6, 3] the ranges 4 to 10 and 2 to 6 overlap by at least 3 numbers (4, 5, 6), so your program should return true.
+```
+
+### Example
+
+- If the array is: [10, 20, 4, 14, 4] then the ranges are:
+
+```plain
+10 11 12 13 14 15 16 17 18 19 20
+4 5 6 7 8 9 10 11 12 13 14
+```
+
+- These ranges overlap by at least 4 numbers, namely: 10, 11, 12, 13, 14 so your program should return true.
+
+### Code
+
+```js
+function OverlappingRanges(arr) {
+
+  // keep a count of how many numbers overlap
+  var counter = 0;
+  
+  // loop through one of the ranges
+  for (var i = arr[0]; i < arr[1]; i++) {
+
+    // check if a number within the first range exists
+    // in the second range
+    if (i >= arr[2] && i <= arr[3]) { 
+      counter += 1;
+    }
+
+  }
+ 
+  // check if the numbers that overlap is equal to or greater
+  // than the last number in the array
+  return (counter >= arr[4]) ? true : false;
+}
+
+OverlappingRanges([4, 10, 2, 6, 3]); 
 ```
