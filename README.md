@@ -1004,6 +1004,7 @@ console.log(getPriv()); // => secret code
 - Below we'll cover some common questions dealing with closures. In another post we'll cover some recursion questions with solutions.
 
 ### Sources
+
 [https://www.quora.com/How-did-you-prepare-for-Hack-Reactors-admissions-challenge](https://www.quora.com/How-did-you-prepare-for-Hack-Reactors-admissions-challenge)
 
 ### 1. What will the following code output?
@@ -1102,11 +1103,11 @@ c.retrieve(); // => The counter is currently at: 14
 - The [map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) function creates a new array by calling a specific function on each element in an initial array. For example, if you have an array of strings in the form "MM-DD" that represent birthdays and you want to convert each element to be in a different format, you could use the map function to create a new array with new elements.
 
 ```js
-var bdays = ['08-14', '10-04', '04-21']; 
+var bdays = ['08-14', '10-04', '04-21'];
 
 // we want a new array where the birthdays will be in the format: MM/DD
-// the elem parameter will be each element from the original array 
-var bdays2 = bdays.map(function(elem) { 
+// the elem parameter will be each element from the original array
+var bdays2 = bdays.map(function(elem) {
   return elem.replace('-', '/');
 });
 
@@ -1173,13 +1174,13 @@ var dataMod = data.filter(function(el) {
   if (el.name != undefined && el.age != undefined) {
     return true;
   }
-  else { 
+  else {
     return false;
   }
 });
 ```
 
-- Notice that we use `!=` which supports type coercion meaning that null will be equal
+- Notice that we use `!=` which supports type coercion meaning that null will be equal to undefined
 - This is why you will see that the last item of name in the array/object is null but will still fulfill the if statement of being falsy
 
 - These are some basic functional programming methods commonly used in JavaScript. Tutorials coming up will focus on more advanced functions and also on incorporating these methods with new [ECMAScript 2015](https://github.com/lukehoban/es6features) syntax and functions as well.
@@ -1219,6 +1220,8 @@ One big thing that will help you: get intimately familiar with the concepts of r
 
 - We'll try to build up a list of solutions for N starting from the smallest staircase. If we want to climb a staircase of 1 step (N = 1), then we can only take 1 step to reach the top. Therefore, the solution when N = 1 is 1. If we want to climb a staircase of 2 steps (N = 2), we can take either 2 steps, or 1 step and 1 step to reach the top. So for N = 2, the solution is 2.
 
+<img src='https://i.imgur.com/YiAuwjT.jpg' alt='3 steps'>
+
 ```plain
 N = 1
 Solution = 1
@@ -1227,8 +1230,6 @@ N = 2
 Solution = 2
 
 Now what about 3 steps?
-
-<img src='https://i.imgur.com/YiAuwjT.jpg' alt='3 steps'>
 
 N = 3
 Solution = 3
@@ -1322,22 +1323,188 @@ function OverlappingRanges(arr) {
 
   // keep a count of how many numbers overlap
   var counter = 0;
-  
+
   // loop through one of the ranges
   for (var i = arr[0]; i < arr[1]; i++) {
 
     // check if a number within the first range exists
     // in the second range
-    if (i >= arr[2] && i <= arr[3]) { 
+    if (i >= arr[2] && i <= arr[3]) {
       counter += 1;
     }
 
   }
- 
+
   // check if the numbers that overlap is equal to or greater
   // than the last number in the array
   return (counter >= arr[4]) ? true : false;
 }
 
-OverlappingRanges([4, 10, 2, 6, 3]); 
+OverlappingRanges([4, 10, 2, 6, 3]);
 ```
+
+# 5/20/2018 Common Algorithms: [Implement Bubble Sort](https://coderbyte.com/algorithm/implement-bubble-sort)
+
+## Implement bubble sort
+
+- Implementing [bubble sort](https://en.wikipedia.org/wiki/Bubble_sort) is used as an example of a slightly harder problem that one should solve to be prepared for the [App Academy](http://www.appacademy.io/#p-home) bootcamp. The source link is listed below, but the statement was:
+
+```plain
+I often use "implement bubble sort" (in a beginner-friendly language like Ruby or Python) as an example of one of the harder problems I had to do in order to get in to App Academy.
+```
+
+- We'll go ahead and implement bubble sort in JavaScript and Python below. Bubble sort is actually a very slow algorithm that one should [never attempt](https://en.wikipedia.org/wiki/Bubble_sort#In_practice) to seriously use, but the algorithm is simple enough to implement which is why this question might be asked.
+
+## Sources
+[http://www.patheos.com/blogs/hallq/2014/06/so-youre-thinking-of-applying-to-app-academy](http://www.patheos.com/blogs/hallq/2014/06/so-youre-thinking-of-applying-to-app-academy)
+
+## Algorithm
+
+- The steps in the bubble sort algorithm are:
+
+```plain
+(1) Loop through the whole array starting from index 1
+(2) If the number in the array at index i-1 is greater than i, swap the numbers and continue
+(3) Once the end of the array is reached, start looping again from the beginning
+(3) Once no more elements can be swapped, the sorting is complete
+```
+
+## Example
+
+```plain
+Let arr = [4, 2, 5, 3]
+
+1st loop through array
+
+i = 1
+Swap (4, 2)
+arr = [2, 4, 5, 3]
+
+i = 2
+Keep (4, 5)
+arr = [2, 4, 5, 3]
+
+i = 3
+Swap (5, 3)
+arr = [2, 4, 3, 5]
+
+2nd loop through array
+
+i = 1
+Keep (2, 4)
+arr = [2, 4, 3, 5]
+
+i = 2
+Swap (4, 3)
+arr = [2, 3, 4, 5]
+
+i = 3
+Keep (4, 5)
+arr = [2, 3, 4, 5]
+```
+
+## Animation example from Wikipedia
+<img src='https://upload.wikimedia.org/wikipedia/commons/c/c8/Bubble-sort-example-300px.gif' />
+
+## Code
+
+```js
+function swap(arr, i1, i2) {
+  var temp = arr[i1];
+  arr[i1] = arr[i2];
+  arr[i2] = temp;
+}
+
+function bubblesort(arr) {
+
+  var swapped = true;
+
+  // keep going unless no elements can be swapped anymore
+  while (swapped) {
+
+    // set swapped to false so that the loop stops
+    // unless two element are actually swapped
+    swapped = false;
+
+    // loop through the whole array swapping adjacent elements
+    for (var i = 1; i < arr.length; i++) {
+      if (arr[i-1] > arr[i]) {
+        swap(arr, i-1, i);
+        swapped = true;
+      }
+    }
+
+  }
+
+  return arr;
+
+}
+
+bubblesort([103, 45, 2, 1, 97, -4, 67]);
+```
+
+## Running time
+
+- This algorithm runs in worst case O(n2) time where n is the number of items that need to be sorted because we potentially need to loop through the entire array every time we reach a new element, making the running time n * n = n2.
+
+# 5/20/2018 Common Algorithms: [Dutch National Flag Sorting](https://coderbyte.com/algorithm/dutch-national-flag-sorting-problem)
+
+## Dutch national flag sorting problem
+
+- For this problem, your goal is to sort an array of 0, 1 and 2's but you must do this in place, in linear time and without any extra space (such as creating an extra array). This is called the [Dutch national flag](https://en.wikipedia.org/wiki/Dutch_national_flag_problem) sorting problem. For example, if the input array is [2,0,0,1,2,1] then your program should output [0,0,1,1,2,2] and the algorithm should run in O(n) time.
+
+## Algorithm
+
+- The solution to this algorithm will require 3 pointers to iterate throughout the array, swapping the necessary elements.
+
+```plain
+(1) Create a low pointer at the beginning of the array and a high pointer at the end of the array.
+(2) Create a mid pointer that starts at the beginning of the array and iterates through each element.
+(3) If the element at arr[mid] is a 2, then swap arr[mid] and arr[high] and decrease the high pointer by 1.
+(4) If the element at arr[mid] is a 0, then swap arr[mid] and arr[low] and increase the low and mid pointers by 1.
+(5) If the element at arr[mid] is a 1, don't swap anything and just increase the mid pointer by 1.
+```
+
+This algorithm stops once the mid pointer passes the high pointer.
+
+## Example
+
+<img src='https://i.imgur.com/8EpiwGe.jpg' />
+
+## Code
+
+```js
+function swap(arr, i1, i2) {
+  var temp = arr[i1];
+  arr[i1] = arr[i2];
+  arr[i2] = temp;
+}
+
+function dutchNatFlag(arr) {
+
+  var low = 0;
+  var mid = 0;
+  var high = arr.length - 1;
+
+  // one pass through the array swapping
+  // the necessary elements in place
+  while (mid <= high) {
+    if      (arr[mid] === 0) { swap(arr, low++, mid++); }
+    else if (arr[mid] === 2) { swap(arr, mid, high--); }
+    else if (arr[mid] === 1) { mid++; }
+  }
+
+  return arr;
+
+}
+
+dutchNatFlag([2,2,2,0,0,0,1,1]);
+```
+
+## Running time
+
+- This algorithm runs in O(n) time because it only passes through the array once swapping the necessary elements in place.
+
+## Sources
+- [http://www.glassdoor.com/Interview/Solve-Dutch-National-Flag-problem-QTN_309969.htm](http://www.glassdoor.com/Interview/Solve-Dutch-National-Flag-problem-QTN_309969.htm)
+- [Youtube Video I watched](https://www.youtube.com/watch?v=BOt1DAvR0zI)
