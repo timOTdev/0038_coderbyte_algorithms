@@ -1508,3 +1508,192 @@ dutchNatFlag([2,2,2,0,0,0,1,1]);
 ## Sources
 - [http://www.glassdoor.com/Interview/Solve-Dutch-National-Flag-problem-QTN_309969.htm](http://www.glassdoor.com/Interview/Solve-Dutch-National-Flag-problem-QTN_309969.htm)
 - [Youtube Video I watched](https://www.youtube.com/watch?v=BOt1DAvR0zI)
+
+# 5/22/2018 Common Algorithms: [Find all duplicates in an array in linear time (v2)](https://coderbyte.com/algorithm/find-duplicates-in-array-linear-time-v2)
+
+## Find all duplicates in an array in linear time (v2)
+
+- This is a common interview question where you need to write a program to find all duplicates in an array. The elements in the array have no restrictions, but in this algorithm we'll work specifically with integers. Finding duplicates in an array can be solved in linear time by using a hash table to store each element as we pass through the array. The general algorithm is:
+
+```plain
+(1) Loop through the array
+(2) At each element check if it exists in the hash table, which has a lookup of O(1) time
+(3) If the element exists in the hash table then it is a duplicate, if it doesn't exist, insert it into the hash table, also O(1)
+```
+
+```js
+function duplicates(arr) {
+
+  // our hash table to store each element
+  // in the array as we pass through it
+  var hashTable = [];
+
+  // store duplicates
+  var dups = [];
+
+  // check each element in the array
+  for (var i = 0; i < arr.length; i++) {
+
+    // if element does not exist in hash table
+    // then insert it
+    if (hashTable[arr[i].toString()] === undefined) {
+      hashTable[arr[i].toString()] = true;
+    }
+
+    // if element does exist in hash table
+    // then we know it is a duplicate
+    else { dups.push(arr[i]); }
+
+  }
+
+  return dups;
+
+}
+
+duplicates([1, 21, -4, 103, 21, 4, 1]);
+```
+
+- The way I did it seems easier without the for loop
+- I didn't use `toString()` method either
+
+```js
+function duplicates(arr) {
+  let hashTable = [];
+  let dups = [];
+
+  arr.forEach(num => {
+    if (hashTable.indexOf(num) === -1) {
+      hashTable.push(num);
+    } else {
+      dups.push(num);
+    }
+  })
+  console.log(hashTable);
+  console.log(dups);
+}
+
+duplicates([1, 21, -4, 103, 21, 4, 1]);
+// [ 1, 21, -4, 103, 4 ]
+// [ 21, 1 ]
+```
+
+## Running time
+
+- This algorithm runs in O(n) time because it loops through the array only once, each time checking if the element exists in the hash table and inserting it, which are both [constant operations](http://bigocheatsheet.com/) (on average) running in O(1) time.
+
+## Sources
+
+- [http://www.careercup.com/question?id=10255343](http://www.careercup.com/question?id=10255343)
+- [https://www.glassdoor.ca/Interview/Given-an-input-array-remove-all-any-duplicate-occurrences-and-return-the-array-QTN_1258495.htm](https://www.glassdoor.ca/Interview/Given-an-input-array-remove-all-any-duplicate-occurrences-and-return-the-array-QTN_1258495.htm)
+
+# 5/22/2018 Common Algorithms: [Two Sum Problem](https://coderbyte.com/algorithm/two-sum-problem)
+
+## Two sum problem
+- The two sum problem is a common interview question, and it is a variation of the [subset sum](https://en.wikipedia.org/wiki/Subset_sum_problem) problem. There is a popular dynamic programming solution for the subset sum problem, but for the two sum problem we can actually write an algorithm that runs in O(n) time. The challenge is to find all the pairs of two integers in an unsorted array that sum up to a given S.
+
+```plain
+For example, if the array is [3, 5, 2, -4, 8, 11] and the sum is 7, your program should return [[11, -4], [2, 5]] because 11 + -4 = 7 and 2 + 5 = 7.
+```
+
+## Naive solution
+
+- A naive approach to this problem would be to loop through each number and then loop again through the array looking for a pair that sums to S. The running time for the below solution would be O(n2) because in the worst case we are looping through the array twice to find a pair.
+
+```js
+// our two sum function which will return
+// all pairs in the array that sum up to S
+function twoSum(arr, S) {
+
+  var sums = [];
+
+  // check each element in array
+  for (var i = 0; i < arr.length; i++) { 
+
+    // check each other element in the array
+    for (var j = i + 1; j < arr.length; j++) {
+
+      // determine if these two elements sum to S
+      if (arr[i] + arr[j] === S) {
+        sums.push([arr[i], arr[j]]);
+      }
+
+    }
+
+  }
+
+  // return all pairs of integers that sum to S
+  return sums;
+
+}
+
+twoSum([3, 5, 2, -4, 8, 11], 7);
+```
+
+## Faster solution
+
+- We can write a faster algorithm that will find pairs that sum to S in linear time. The algorithm below makes use of hash tables which have a constant lookup time. As we pass through each element in the array, we check to see if S minus the current element exists in the hash table. We only need to loop through the array once, resulting in a running time of O(n) since each lookup and insertion in a hash table is O(1).
+
+## Example
+
+- If the array is: [4, 5, 1, 8] and the sum is 6 the algorithm would proceed with the steps below:
+
+```plain
+(1) The hash table is initially empty and the first element in the array is 4. We simply put 4 into the hash table.
+
+(2) The next element is 5. We check to see if the sum minus the current element exists in the hash table. 6 - 5 = 1 does not exist in the hash table. So add 5 to the hash table.
+
+(3) The next element is 1. We check to see if the sum minus the current element exists in the hash table. 6 - 1 = 5 does exist in the hash table so we found a pair!
+```
+
+## Code for faster solution
+
+```js
+// our two sum function which will return
+// all pairs in the array that sum up to S
+function twoSum(arr, S) {
+
+  var sums = [];
+  var hashTable = {};
+
+  // check each element in array
+  for (var i = 0; i < arr.length; i++) {
+
+    // calculate S - current element
+    var sumMinusElement = S - arr[i];
+
+    // check if this number exists in hash table
+    // if so then we found a pair of numbers that sum to S
+    if (hashTable[sumMinusElement.toString()] !== undefined) {
+      sums.push([arr[i], sumMinusElement]);
+    }
+
+    // add the current number to the hash table
+    hashTable[arr[i].toString()] = arr[i];
+
+  }
+
+  // return all pairs of integers that sum to S
+  return sums;
+
+}
+
+twoSum([3, 5, 2, -4, 8, 11], 7);
+```
+
+- The confusing thing here is that it checks the sum minus element difference
+- but makes sense once you understand it
+- If we go through the code, here's what I get:
+1. 7-3=4, Nothing happens and 3 gets pushed into the hashTable as 3:3
+2. 7-5=2, No items in hashTable so gets pushed as 5:5
+3. 7-2=5, There's a key with 5 and has a value, therefore we push the sums array [2,5]
+4. So on an so forth
+5. Same process in 3 happens with 11 since -4 was already in the hash table
+
+- Note here that we used `.toString()` even though Javascript does this automatically
+- "in JavaScript hash tables, the keys cannot be integers. JavaScript will automatically convert the number to a string, but I just did it explicitly in the code above."
+
+### Sources
+
+- [http://www.careercup.com/question?id=15206700](http://www.careercup.com/question?id=15206700)
+- [http://www.glassdoor.com/Interview/Given-a-sorted-array-write-a-program-to-decide-if-two-elements-sum-up-to-a-third-QTN_242990.htm](http://www.glassdoor.com/Interview/Given-a-sorted-array-write-a-program-to-decide-if-two-elements-sum-up-to-a-third-QTN_242990.htm)
+- [http://www.glassdoor.com/Interview/Given-a-sum-find-two-numbers-in-an-array-with-that-sum-QTN_864790.htm](http://www.glassdoor.com/Interview/Given-a-sum-find-two-numbers-in-an-array-with-that-sum-QTN_864790.htm)
