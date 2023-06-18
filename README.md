@@ -1,4 +1,4 @@
-# Coderbyte-Algorithms
+# 0038_coderbyte_algorithms
 
 ## 5/18/2018: [Kaprekars Constant](https://coderbyte.com/information/Kaprekars%20Constant)
 
